@@ -15,6 +15,33 @@ if (process.argv.length > 2 && process.argv[2] === '-t' && process.argv[3]) {
   tag = process.argv[3];
 }
 
+function show (config) {
+  co(function * () {
+    const items = yield getItems(config, tag);
+
+    const titles = items.map((i) => {
+      const time = i.word_count / 275;
+      const duration = sprintf('%2u', time);
+      return {
+        name: `${duration} minutes - ${i.resolved_title}` || 'no title',
+        value: i.item_id
+      };
+    });
+
+    const i = yield inquirer.prompt([
+      {type: 'list', name: 'titles', message: 'pick an item', choices: titles, pageSize: 30}
+    ]);
+
+    const item = items.find((it) => {
+      return it.item_id === i.titles;
+    });
+
+    opener(`https://getpocket.com/a/read/${item.item_id}`);
+
+    show(config);
+  })();
+}
+
 co(function * () {
   let c;
 
@@ -42,28 +69,5 @@ co(function * () {
     yield config.write(c);
   }
 
-  const items = yield getItems(c, tag);
-
-  const titles = items.map((i) => {
-    const time = i.word_count / 275;
-    const duration = sprintf('%2u', time);
-    return {
-      name: `${duration} minutes - ${i.resolved_title}` || 'no title',
-      value: i.item_id
-    };
-  });
-
-  const i = yield inquirer.prompt([
-    {type: 'list', name: 'titles', message: 'pick an item', choices: titles, pageSize: 30}
-  ]);
-
-  console.log(i);
-
-  const item = items.find((it) => {
-    return it.item_id === i.titles;
-  });
-
-  console.log(item);
-
-  opener(`https://getpocket.com/a/read/${item.item_id}`);
+  show(c);
 })();
