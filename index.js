@@ -2,8 +2,10 @@
 
 const Bluebird = require('bluebird');
 const inquirer = require('inquirer');
+const opener = require('opener');
 const config = require('./lib/config');
-const getAccessToken = require('./lib/get-access-token')
+const getAccessToken = require('./lib/get-access-token');
+const getItems = require('./lib/get-items');
 
 const co = Bluebird.coroutine;
 
@@ -33,4 +35,22 @@ co(function * () {
     c.access_token = response.access_token;
     yield config.write(c);
   }
+
+  const items = yield getItems(c);
+
+  const titles = items.map((i) => {
+    return i.resolved_title || 'no title';
+  });
+
+  const i = yield inquirer.prompt([
+    {type: 'list', name: 'titles', message: 'pick an item', choices: titles, pageSize: 30}
+  ]);
+
+  const item = items.find((it) => {
+    return it.resolved_title === i.titles;
+  });
+
+  console.log(item);
+
+  opener(`https://getpocket.com/a/read/${item.item_id}`);
 })();
