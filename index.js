@@ -6,6 +6,7 @@ const opener = require('opener');
 const config = require('./lib/config');
 const getAccessToken = require('./lib/get-access-token');
 const getItems = require('./lib/get-items');
+const sprintf = require('sprintf-js').sprintf;
 
 const co = Bluebird.coroutine;
 
@@ -39,15 +40,22 @@ co(function * () {
   const items = yield getItems(c);
 
   const titles = items.map((i) => {
-    return i.resolved_title || 'no title';
+    const time = i.word_count / 275;
+    const duration = sprintf('%2u', time);
+    return {
+      name: `${duration} minutes - ${i.resolved_title}` || 'no title',
+      value: i.item_id
+    };
   });
 
   const i = yield inquirer.prompt([
     {type: 'list', name: 'titles', message: 'pick an item', choices: titles, pageSize: 30}
   ]);
 
+  console.log(i);
+
   const item = items.find((it) => {
-    return it.resolved_title === i.titles;
+    return it.item_id === i.titles;
   });
 
   console.log(item);

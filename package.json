@@ -15,6 +15,7 @@
     "lodash": "^4.17.0",
     "opener": "^1.4.2",
     "request": "^2.78.0",
-    "request-promise": "^4.1.1"
+    "request-promise": "^4.1.1",
+    "sprintf-js": "^1.0.3"
   }
 }
