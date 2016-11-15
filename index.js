@@ -9,6 +9,11 @@ const getItems = require('./lib/get-items');
 const sprintf = require('sprintf-js').sprintf;
 
 const co = Bluebird.coroutine;
+let tag;
+
+if (process.argv.length > 2 && process.argv[2] === '-t' && process.argv[3]) {
+  tag = process.argv[3];
+}
 
 co(function * () {
   let c;
@@ -37,7 +42,7 @@ co(function * () {
     yield config.write(c);
   }
 
-  const items = yield getItems(c);
+  const items = yield getItems(c, tag);
 
   const titles = items.map((i) => {
     const time = i.word_count / 275;
