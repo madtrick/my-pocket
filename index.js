@@ -3,6 +3,7 @@
 const Bluebird = require('bluebird');
 const inquirer = require('inquirer');
 const opener = require('opener');
+const moment = require('moment');
 const config = require('./lib/config');
 const getAccessToken = require('./lib/get-access-token');
 const getItems = require('./lib/get-items');
@@ -27,9 +28,10 @@ function show (config) {
       const time = i.word_count / 275;
       const duration = sprintf('%2u', time);
       const tags = Object.keys(i.tags || {});
+      const age = moment(i.time_added * 1000).fromNow(true);
 
       return {
-        name: `${duration} minutes - [${tags}] - ${i.resolved_title}` || 'no title',
+        name: `${age} - ${duration} minutes - [${tags}] - ${i.resolved_title}` || 'no title',
         value: i.item_id
       };
     });
