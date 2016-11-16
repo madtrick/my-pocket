@@ -15,6 +15,10 @@ if (process.argv.length > 2 && process.argv[2] === '-t' && process.argv[3]) {
   tag = process.argv[3];
 }
 
+if (process.argv.length > 2 && process.argv[2] === '--no-tag') {
+  tag = '_untagged_';
+}
+
 function show (config) {
   co(function * () {
     const items = yield getItems(config, tag);
@@ -22,8 +26,10 @@ function show (config) {
     const titles = items.map((i) => {
       const time = i.word_count / 275;
       const duration = sprintf('%2u', time);
+      const tags = Object.keys(i.tags || {});
+
       return {
-        name: `${duration} minutes - ${i.resolved_title}` || 'no title',
+        name: `${duration} minutes - [${tags}] - ${i.resolved_title}` || 'no title',
         value: i.item_id
       };
     });
