@@ -20,10 +20,18 @@ if (process.argv.length > 2 && process.argv[2] === '--no-tag') {
   tag = '_untagged_';
 }
 
-function show (config) {
-  co(function * () {
-    const items = yield getItems(config, tag);
+function offset (items, item) {
+  const index = items.findIndex((i) => i === item);
 
+  console.log(index);
+  const head = items.slice(0, index + 1);
+  const tail = items.slice(index + 1);
+
+  return tail.concat(head);
+}
+
+function show (items) {
+  co(function * () {
     const titles = items.map((i) => {
       const time = i.word_count / 275;
       const duration = sprintf('%2u', time);
@@ -46,7 +54,7 @@ function show (config) {
 
     opener(`https://getpocket.com/a/read/${item.item_id}`);
 
-    show(config);
+    show(offset(items, item));
   })();
 }
 
@@ -77,5 +85,7 @@ co(function * () {
     yield config.write(c);
   }
 
-  show(c);
+  const items = yield getItems(c, tag);
+
+  show(items);
 })();
