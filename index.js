@@ -36,7 +36,7 @@ function show (items) {
       const time = i.word_count / 275;
       const duration = sprintf('%2u', time);
       const tags = Object.keys(i.tags || {});
-      const age = moment(i.time_added * 1000).fromNow(true);
+      const age = sprintf('%9s', moment(i.time_added * 1000).fromNow(true));
 
       return {
         name: `${age} - ${duration} minutes - [${tags}] - ${i.resolved_title}` || 'no title',
@@ -54,7 +54,12 @@ function show (items) {
 
     opener(`https://getpocket.com/a/read/${item.item_id}`);
 
-    show(offset(items, item));
+
+    const offseted = offset(items, item);
+    const itemIndex = offseted.indexOf(item);
+    const newItems = offseted.slice(0, itemIndex).concat(offseted.slice(itemIndex + 1));
+
+    show(newItems);
   })();
 }
 
