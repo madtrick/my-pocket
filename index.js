@@ -4,10 +4,11 @@ const Bluebird = require('bluebird');
 const inquirer = require('inquirer');
 const opener = require('opener');
 const moment = require('moment');
+const sprintf = require('sprintf-js').sprintf;
 const config = require('./lib/config');
 const getAccessToken = require('./lib/get-access-token');
 const getItems = require('./lib/get-items');
-const sprintf = require('sprintf-js').sprintf;
+const archiveItem = require('./lib/archive-item');
 
 const co = Bluebird.coroutine;
 let tag;
@@ -30,7 +31,7 @@ function offset (items, item) {
   return tail.concat(head);
 }
 
-function show (items) {
+function show (config, items) {
   co(function * () {
     const titles = items.map((i) => {
       const time = i.word_count / 275;
@@ -54,11 +55,13 @@ function show (items) {
 
     opener(item.resolved_url);
 
+    yield archiveItem(config, item.item_id);
+
     const offseted = offset(items, item);
     const itemIndex = offseted.indexOf(item);
     const newItems = offseted.slice(0, itemIndex).concat(offseted.slice(itemIndex + 1));
 
-    show(newItems);
+    show(config, newItems);
   })();
 }
 
@@ -91,5 +94,5 @@ co(function * () {
 
   const items = yield getItems(c, tag);
 
-  show(items);
+  show(c, items);
 })();
