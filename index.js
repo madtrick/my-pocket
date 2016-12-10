@@ -52,8 +52,7 @@ function show (items) {
       return it.item_id === i.titles;
     });
 
-    opener(`https://getpocket.com/a/read/${item.item_id}`);
-
+    opener(item.resolved_url);
 
     const offseted = offset(items, item);
     const itemIndex = offseted.indexOf(item);
