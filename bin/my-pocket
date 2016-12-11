@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict';
 
 const Bluebird = require('bluebird');
@@ -5,10 +7,10 @@ const inquirer = require('inquirer');
 const opener = require('opener');
 const moment = require('moment');
 const sprintf = require('sprintf-js').sprintf;
-const Config = require('./lib/config');
-const getAccessToken = require('./lib/get-access-token');
-const getItems = require('./lib/get-items');
-const archiveItem = require('./lib/archive-item');
+const Config = require('../lib/config');
+const getAccessToken = require('../lib/get-access-token');
+const getItems = require('../lib/get-items');
+const archiveItem = require('../lib/archive-item');
 
 const co = Bluebird.coroutine;
 let tag;

@@ -7,7 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
   },
-  "author": "",
+  "author": {
+    "name": "Farruco Sanjurjo",
+    "url": "github.com/madtrick"
+  },
+  "bin": "./bin/my-pocket",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.4.6",
