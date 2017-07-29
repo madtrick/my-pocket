@@ -52,9 +52,10 @@ function show (config, items) {
 
     const item = items.find(it => it.item_id === i.titles);
 
-    opener(item.resolved_url);
+    // opener(item.resolved_url);
+    opener(`https://getpocket.com/a/read/${item.item_id}`);
 
-    yield archiveItem(config, item.item_id);
+    // yield archiveItem(config, item.item_id);
 
     const offseted = offset(items, item);
     const itemIndex = offseted.indexOf(item);
@@ -95,3 +96,13 @@ co(function* main () {
 
   show(c, items);
 })();
+
+// Nice things to have
+// - pass multiple tags
+// - randomize a selection of weighted tags (like give me 5 rating_5 1 rating_3 and 3 rating_1)
+//  - related to this, another idea could be to config the tool to give a fixed number of items
+//  per period of time, something like: "give 10 technical articles per week and 4 non technical"
+// - by default don't show items older than a threshold. If I hadn't picked them up yet it might be
+//  for a reason
+// - add an option to retag old elements. For example: rating_5 elements older than 10 days would be moved to rating_3
+//  rating_3 elements older than a month would be moved to rating_1
